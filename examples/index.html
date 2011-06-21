@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  
+    <title>SlideScroller</title>
+    <style type="text/css" media="">
+      * {
+        margin:0;
+        padding:0;
+      }
+      body, #wrapper, #testshow, #vertshow1 {
+        overflow:hidden;
+      }
+      h1, h2, h3 { margin:25px; }
+      #scroller {
+        height:728px;
+        width:924px;
+        position:absolute;
+        z-index:100;
+        top:0;
+        left:0;
+      }
+      #slidescroller {
+        height:728px;
+        width:924px;
+        position:absolute;
+        top:0;
+        left:0;
+        z-index:100;
+      }
+      #slidescroller2 {
+        height:728px;
+        height:728px;
+        width:924px;
+        position:absolute;
+        top:0;
+        left:0;
+        z-index:99;
+      }
+      #slidescroller3 {
+        height:728px;
+        height:728px;
+        width:924px;
+        position:absolute;
+        top:0;
+        left:0;
+        z-index:99;
+      }
+      #clearscroll {
+        height:728px;
+        height:728px;
+        width:924px;
+        position:absolute;
+        top:0;
+        left:0;
+        z-index:100;
+      }
+      #testshow {
+        width:4096px;
+        -webkit-transition-duration:0.8s;
+      }
+      #vertshow1 {
+        height:3072px;
+        -webkit-transition-duration:0.8s;
+      }
+      #vertshow2 {
+        height:3072px;
+        -webkit-transition-duration:0.8s;
+      }
+      .slide, .vslide {
+        background-color:#ddd;
+        width:1024px;
+        height:768px;
+      }
+      .slide {
+        float:left
+      }
+      .vslide {
+        color:#fff;
+      }
+      
+    </style>
+    
+  </head>
+  <body>
+    <div id="wrapper">
+     <section id="slideshows">
+       <section id="testshow" class="slideshow">
+        <article id="intro" class="slide">
+          <h2>Intro slide</h2>
+        </article>
+        <article id="slide2" class="slide">
+          <section id="vertshow1" class="verticalSlides">
+            <article id="slide2_1" class="vslide">
+              <h2>Slide 2-1</h2>
+            </article>
+            <article id="slide2_2" class="vslide">
+              <h2>Slide 2-2</h2>
+            </article>
+            <article id="slide2_3" class="vslide">
+              <h2>Slide 2-3</h2>
+            </article>
+            <article id="slide2_4" class="vslide">
+              <h2>Slide 2-4</h2>
+            </article>
+          </section>
+        </article>
+        <article id="slide3" class="slide">
+          <h2>Slide 3</h2>
+        </article>
+        <article id="slide4" class="slide">
+          <section id="vertshow2" class="verticalSlides">
+            <article id="slide4_1" class="vslide">
+              <h2>Slide 4-1</h2>
+            </article>
+            <article id="slide4_2" class="vslide">
+              <h2>Slide 4-2</h2>
+            </article>
+            <article id="slide4_3" class="vslide">
+              <h2>Slide 4-3</h2>
+            </article>
+            <article id="slide4_4" class="vslide">
+              <h2>Slide 4-4</h2>
+            </article>
+          </section>
+        </article>
+       </section>
+     </section>
+    </div>
+
+    <div id="scrollers">
+      <div id="slidescroller">
+        <div id="slidescroller2"></div>
+        <div id="slidescroller3"></div>
+        <div id="clearscroll"></div>
+      </div>
+    </div>
+
+    <script src="touchy.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../src/slidescroller.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      window.scroller = new SlideScroller('slidescroller', 'testshow', 'horizontal', 4);
+      window.vscroller = new SlideScroller('slidescroller2', 'vertshow1', 'vertical', 4);
+      window.vscroller2 = new SlideScroller('slidescroller3', 'vertshow2', 'vertical', 4);
+      scroller.register('swipeleft', 'next');
+      scroller.register('swiperight', 'previous');
+      vscroller.register('swipeup', 'next');
+      vscroller.register('swipedown', 'previous');
+      vscroller2.register('swipeup', 'next');
+      vscroller2.register('swipedown', 'previous');
+      document.addEventListener('scrollIn', function() {
+        var currentSlide = scroller.currentNr;
+        console.log(currentSlide);
+        if (currentSlide === 1) {
+          vscroller.activate();
+        }
+        else if (currentSlide === 3) {
+          vscroller2.activate();
+        }
+      });
+      document.addEventListener('scrollOut', function() {
+        console.log('scrolling out');
+        var currentSlide = scroller.currentNr;
+        console.log(currentSlide);
+        if (currentSlide === 1) {
+          vscroller.reset();
+        }
+        else if (currentSlide === 3) {
+          vscroller2.reset();
+        }
+      });
+    </script>
+  </body>
+</html>
