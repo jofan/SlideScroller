@@ -170,6 +170,9 @@
           vscroller2.reset();
         }
       });
+      document.ontouchmove = function(e){
+        e.preventDefault();
+      };      
     </script>
   </body>
 </html>
