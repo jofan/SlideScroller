@@ -6,23 +6,38 @@
  *  vertWidth:
  */
 (function() {
-  window.SlideScroller = function(id, scrollId, type, limit, config) {
+  window.SlideScroller = function(id, config) {
     config = config || {};
     this.id = id;
-    this.scrollId = scrollId;
-    this.type = type;
+    this.scrollId = config.slideshow;
+    this.type = config.type || 'primary';
+    this.direction = config.direction || 'horizontal';
     this.ele = document.getElementById(id);
     this.ele.obj = this;
-    this.scrollEle = document.getElementById(scrollId);
+    this.scrollEle = document.getElementById(this.scrollId);
+    console.log(config.direction);
     this.currentNr = 0;
-    this.limit = limit || 50;
+    this.limit = config.nrOfSlides || 20;
     this.horzHeight = config.horzHeight || 768;
     this.horzWidth = config.horzWidth || 1024;
     this.vertHeight = config.vertHeight || 1024;
     this.vertWidth = config.vertWidth || 768;
+    this._init();
   };
 
   SlideScroller.prototype = {
+    _init: function() {
+      if (this.direction === 'horizontal') {
+        this.register('swipeleft', 'next');
+        this.register('swiperight', 'previous');
+      }
+      else {
+        this.register('swipeup', 'next');
+        this.register('swipedown', 'previous');
+      }
+      this.active = false;
+    },
+
     _setCurrentNr: function(nr) {
       this.currentNr = nr;
     },
@@ -31,8 +46,8 @@
       var css = '',
           val;
       console.log('scrolling');
-      document.dispatchEvent(scrollOut);
-      if (this.type === "horizontal") {
+      this.ele.dispatchEvent(slideExit);
+      if (this.direction === "horizontal") {
         val = nr * -this.horzWidth;
         css = '-webkit-transform:translate3d(' + val + 'px, 0, 0);';
       }
@@ -42,7 +57,10 @@
       }
       this.scrollEle.style.cssText = css;
       this._setCurrentNr(nr);
-      document.dispatchEvent(scrollIn);
+      this.ele.dispatchEvent(slideEnter);
+      if (this.type === 'primary') {
+        document.dispatchEvent(slideshowChange);
+      }
     },
 
     bind: function(scope, callback) {
@@ -65,12 +83,21 @@
 
     activate: function() {
       this.ele.style.zIndex = '101';
+      this.active = true;
+    },
+
+    isActive: function() {
+      return this.active;
     },
 
     reset: function() {
+      var self = this;
       this.ele.style.zIndex = '';
-      this.scrollEle.style.cssText = '-webkit-transform:translate3d(0px,0px,0px);';
-      this._setCurrentNr(0);
+      this.active = false;
+      setTimeout(function() {
+        self.scrollEle.style.cssText = '-webkit-transform:translate3d(0px,0px,0px);';
+        self._setCurrentNr(0);
+      }, 800);
     },
 
     setLimit: function(limit) {
@@ -102,9 +129,11 @@
   };
 
   (function createSlideEvents () {
-      window.scrollIn = document.createEvent('UIEvents');
-      window.scrollOut = document.createEvent('UIEvents');
-      scrollIn.initEvent('scrollIn', true, false);
-      scrollOut.initEvent('scrollOut', true, false);
+      window.slideEnter = document.createEvent('UIEvents');
+      window.slideExit = document.createEvent('UIEvents');
+      window.slideshowChange = document.createEvent('UIEvents');
+      slideEnter.initEvent('scrollIn', true, true);
+      slideExit.initEvent('scrollOut', true, true);
+      slideshowChange.initEvent('slideshowChange', true, true);
   })();  
 })();

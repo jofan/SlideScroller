@@ -9,11 +9,11 @@
         margin:0;
         padding:0;
       }
-      body, #wrapper, #testshow, #vertshow1 {
+      body, #wrapper, #testshow, #vertshow1, #vertshow2 {
         overflow:hidden;
       }
       h1, h2, h3 { margin:25px; }
-      #scroller {
+      .scroller {
         height:728px;
         width:924px;
         position:absolute;
@@ -21,40 +21,8 @@
         top:0;
         left:0;
       }
-      #slidescroller {
-        height:728px;
-        width:924px;
-        position:absolute;
-        top:0;
-        left:0;
-        z-index:100;
-      }
-      #slidescroller2 {
-        height:728px;
-        height:728px;
-        width:924px;
-        position:absolute;
-        top:0;
-        left:0;
+      .secondary {
         z-index:99;
-      }
-      #slidescroller3 {
-        height:728px;
-        height:728px;
-        width:924px;
-        position:absolute;
-        top:0;
-        left:0;
-        z-index:99;
-      }
-      #clearscroll {
-        height:728px;
-        height:728px;
-        width:924px;
-        position:absolute;
-        top:0;
-        left:0;
-        z-index:100;
       }
       #testshow {
         width:4096px;
@@ -130,46 +98,49 @@
     </div>
 
     <div id="scrollers">
-      <div id="slidescroller">
-        <div id="slidescroller2"></div>
-        <div id="slidescroller3"></div>
-        <div id="clearscroll"></div>
+      <div id="slidescroller" class="scroller">
+        <div id="vscroller" class="scroller secondary"></div>
+        <div id="vscroller2" class="scroller secondary"></div>
+        <div id="clearscroll" class="scroller"></div>
       </div>
     </div>
 
     <script src="touchy.js" type="text/javascript" charset="utf-8"></script>
     <script src="../src/slidescroller.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
-      window.scroller = new SlideScroller('slidescroller', 'testshow', 'horizontal', 4);
-      window.vscroller = new SlideScroller('slidescroller2', 'vertshow1', 'vertical', 4);
-      window.vscroller2 = new SlideScroller('slidescroller3', 'vertshow2', 'vertical', 4);
-      scroller.register('swipeleft', 'next');
-      scroller.register('swiperight', 'previous');
-      vscroller.register('swipeup', 'next');
-      vscroller.register('swipedown', 'previous');
-      vscroller2.register('swipeup', 'next');
-      vscroller2.register('swipedown', 'previous');
-      document.addEventListener('scrollIn', function() {
+      window.scroller = new SlideScroller('slidescroller', {
+        slideshow: 'testshow',
+        type: 'primary',
+        direction: 'horizontal',
+        nrOfSlides: 4
+      });
+      window.vscroller = new SlideScroller('vscroller', {
+        slideshow: 'vertshow1',
+        type: 'secondary',
+        direction: 'vertical',
+        nrOfSlides: 4
+      });
+      window.vscroller2 = new SlideScroller('vscroller2', {
+        slideshow: 'vertshow2',
+        type: 'secondary',
+        direction: 'vertical',
+        nrOfSlides: 4
+      });
+
+      document.addEventListener('slideshowChange', function() {
         var currentSlide = scroller.currentNr;
-        console.log(currentSlide);
         if (currentSlide === 1) {
           vscroller.activate();
         }
         else if (currentSlide === 3) {
           vscroller2.activate();
         }
-      });
-      document.addEventListener('scrollOut', function() {
-        console.log('scrolling out');
-        var currentSlide = scroller.currentNr;
-        console.log(currentSlide);
-        if (currentSlide === 1) {
-          vscroller.reset();
-        }
-        else if (currentSlide === 3) {
-          vscroller2.reset();
+        else {
+            vscroller.reset();
+            vscroller2.reset();
         }
       });
+
       document.ontouchmove = function(e){
         e.preventDefault();
       };      
